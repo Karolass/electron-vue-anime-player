@@ -1,10 +1,10 @@
 {
   "name": "electron-vue-anime-player",
   "productName": "electron-vue-anime-player",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Karolass <tark810145@gmail.com>",
   "description": "An electron-vue project",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js",
