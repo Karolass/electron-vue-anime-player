@@ -5,11 +5,11 @@ const baseUrl = 'http://myself-bbs.com/'
 
 exports.list = async (page) => {
   try {
-    // const html = await request.get(`forum-133-${page}.html`)
-    const html = page ? await request.get(page) : await request.get('forum-133-1.html')
+    const html = await request.get(`forum-133-${page}.html`)
+    // const html = page ? await request.get(page) : await request.get('forum-133-1.html')
 
     const result = {
-      next: '',
+      next: false,
       data: [],
     }
     const $ = cheerio.load(html)
@@ -29,10 +29,7 @@ exports.list = async (page) => {
     })
 
     const next = $('.nxt')
-    if (next.length > 0) {
-      result.next = next[0].attribs.href
-    }
-
+    result.next = next.length > 0
     return result
   } catch (err) {
     return err

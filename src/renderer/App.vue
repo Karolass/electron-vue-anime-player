@@ -13,7 +13,7 @@
       <q-drawer ref="leftDrawer">
         <div class="list platform-delimiter">
           <div class="list-header"></div>
-          <q-drawer-link icon="mail" :to="{path: '/', exact: true}">List</q-drawer-link>
+          <q-drawer-link icon="mail" :to="{path: '/', exact: true}">連載中</q-drawer-link>
         </div>
       </q-drawer>
 

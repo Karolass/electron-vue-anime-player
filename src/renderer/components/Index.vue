@@ -16,35 +16,73 @@
           </div>
         </template>
       </div>
+      <div v-if="haveNext" class="row justify-center" style="margin-bottom: 50px;">
+        <spinner name="dots" slot="message" :size="40"></spinner>
+      </div>
+      <h5 v-if="!haveNext" class="text-center">已經到底囉</h5>
     </div>
   </div>
 </template>
 
 <script>
 
+function debounce(fn, wait = 250, immediate) {
+  let timeout
+  return function p(...args) {
+    const later = () => {
+      timeout = null
+      if (!immediate) {
+        fn.apply(this, args)
+      }
+    }
+
+    clearTimeout(timeout)
+    if (immediate && !timeout) {
+      fn.apply(this, args)
+    }
+    timeout = setTimeout(later, wait)
+  }
+}
+
 export default {
   data() {
     return {
       index: 1,
+      haveNext: true,
       data: [],
     }
   },
   computed: {
   },
   methods: {
-    load() {
-      this.$electron.ipcRenderer.send('do-get-list')
+    poll() {
+      if (this.$el.scrollHeight - 100 <= this.$el.offsetHeight + this.$el.scrollTop) {
+        this.loadMore()
+      }
     },
-    getList(event, data) {
-      this.data = this.data.concat(data)
+    loadMore() {
+      if (this.haveNext) {
+        this.$electron.ipcRenderer.send('do-get-list', this.index)
+        this.index += 1
+      }
+      this.$el.removeEventListener('scroll', this.poll)
+    },
+    getList(event, result) {
+      this.data = this.data.concat(result.data)
+      this.haveNext = result.next
+      this.$el.addEventListener('scroll', this.poll)
     },
   },
   mounted() {
-    this.load()
-    this.$electron.ipcRenderer.on('done-get-list', this.getList)
+    this.$nextTick(() => {
+      this.poll = debounce(this.poll, 50)
+      this.loadMore()
+      this.$electron.ipcRenderer.on('done-get-list', this.getList)
+    })
   },
   beforeDestroy() {
     this.$electron.ipcRenderer.removeListener('done-get-list', this.getList)
+    this.$el.removeEventListener('scroll', this.poll)
   },
 }
 </script>

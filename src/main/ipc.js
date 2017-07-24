@@ -4,15 +4,11 @@ import crawler from './lib/crawler.js'
 
 async function getList(event, page) {
   const result = await crawler.list(page)
-  event.sender.send('done-get-list', result.data)
-
-  if (result.next) {
-    getList(event, result.next)
-  }
+  event.sender.send('done-get-list', result)
 }
 
-ipcMain.on('do-get-list', (event) => {
-  getList(event)
+ipcMain.on('do-get-list', (event, page) => {
+  getList(event, page)
 })
 
 ipcMain.on('do-get-page', async (event, page) => {
