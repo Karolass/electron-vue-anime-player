@@ -4,7 +4,7 @@
       <div class="row gutter wrap">
         <template v-for="item in data">
           <div class="sm-width-1of1 md-width-1of2 lg-width-1of4">
-            <router-link :to="{ name: 'page', params: { path: item.href }}">
+            <router-link :to="{ name: 'page', params: { path: item.href, title: item.title }}">
               <div class="card">
                 <div class="card-title text-center">
                   {{ item.title }}
