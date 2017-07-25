@@ -3,11 +3,14 @@ const request = require('./request')
 
 const baseUrl = 'http://myself-bbs.com/'
 
-exports.list = async (page) => {
+/*
+ * page (INT)
+ * type (INT) 0: 連載, 1: 完結
+ */
+exports.list = async (page, type) => {
   try {
-    const html = await request.get(`forum-133-${page}.html`)
+    const html = await request.get(type === 0 ? `forum-133-${page}.html` : `forum-113-${page}.html`)
     // const html = page ? await request.get(page) : await request.get('forum-133-1.html')
-
     const result = {
       next: false,
       data: [],

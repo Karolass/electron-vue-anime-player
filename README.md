@@ -23,3 +23,7 @@ npm run build:linux
 # build for Windows
 npm run build:win32
 ```
+
+#### Anime Source
+
+myself-bbs

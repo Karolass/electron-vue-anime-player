@@ -47,7 +47,10 @@ function debounce(fn, wait = 250, immediate) {
 export default {
   data() {
     return {
-      index: 1,
+      reqData: {
+        page: 1,
+        type: 0,
+      },
       haveNext: true,
       data: [],
     }
@@ -62,8 +65,8 @@ export default {
     },
     loadMore() {
       if (this.haveNext) {
-        this.$electron.ipcRenderer.send('do-get-list', this.index)
-        this.index += 1
+        this.$electron.ipcRenderer.send('do-get-list', this.reqData)
+        this.reqData.page += 1
       }
       this.$el.removeEventListener('scroll', this.poll)
     },
@@ -71,6 +74,12 @@ export default {
       this.data = this.data.concat(result.data)
       this.haveNext = result.next
       this.$el.addEventListener('scroll', this.poll)
+    },
+    reload() {
+      this.reqData.page = 1
+      this.reqData.type = this.$route.name === 'finish' ? 1 : 0
+      this.data = []
+      this.loadMore()
     },
   },
   mounted() {
@@ -83,6 +92,11 @@ export default {
   beforeDestroy() {
     this.$electron.ipcRenderer.removeListener('done-get-list', this.getList)
     this.$el.removeEventListener('scroll', this.poll)
+  },
+  watch: {
+    $route() {
+      this.reload()
+    },
   },
 }
 </script>
